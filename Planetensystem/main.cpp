@@ -5,6 +5,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "glsl.h"
+#include "math\CMatrix.h"
+
 
 double dX = -0.9;
 double dY = -0.9;
@@ -13,10 +15,6 @@ int numVertices = 0;
 int numIndices = 0;
 
 void display() {
-
-	
-	
-	
 
 	
 
@@ -80,6 +78,7 @@ void InitGeometrie()
 	
 
 	glGenBuffers(2, myBuffers);
+
 
 	//Geometrie
 
@@ -175,6 +174,14 @@ int main(int argc, char **argv) {
 	shader->BindAttribLocation(2, "att_color");
 
 	shader->begin();
+
+	CMatrix view;
+
+	double m[16];
+
+	view.get(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13], m[14], m[15]);
+
+	shader->setUniformMatrix4fv("uni_matrix", 1, GL_FALSE, m);
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;
