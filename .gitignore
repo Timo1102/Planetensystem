@@ -11,7 +11,10 @@
 *.lai
 *.la
 *.a
-Debug/
+
+Debug/*
+!Debug/*.dll
 ipch/
 *.sdf
+*.opensdf
 Planetensystem/Debug/
