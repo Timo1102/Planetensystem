@@ -13,5 +13,5 @@
 *.a
 Debug/
 ipch/
-
+*.sdf
 Planetensystem/Debug/
