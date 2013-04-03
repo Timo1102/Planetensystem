@@ -147,16 +147,6 @@ int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 
 
-	cwc::glShaderManager shaderManager;
-	
-	cwc::glShader *shader = shaderManager.loadfromFile("../shader/vertex.glsl", "../shader/fragment.glsl");
-
-	shader->begin();
-
-	shader->BindAttribLocation(0, "att_vertex");
-	shader->BindAttribLocation(1, "att_normal");
-	shader->BindAttribLocation(2, "att_color");
-
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(800,800);
 	glutInitWindowPosition(10,10);
@@ -173,6 +163,18 @@ int main(int argc, char **argv) {
 	glutShowWindow();
 
 	glewInit();
+
+	cwc::glShaderManager shaderManager;
+	
+	cwc::glShader *shader = shaderManager.loadfromFile("../Planetensystem/shader/vertex.glsl", "../Planetensystem/shader/fragment.glsl");
+
+	
+
+	shader->BindAttribLocation(0, "att_vertex");
+	shader->BindAttribLocation(1, "att_normal");
+	shader->BindAttribLocation(2, "att_color");
+
+	shader->begin();
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;
