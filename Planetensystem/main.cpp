@@ -7,6 +7,9 @@
 double dX = -0.9;
 double dY = -0.9;
 
+int numVertices = 0;
+int numIndices = 0;
+
 void display() {
 
 	
@@ -16,6 +19,8 @@ void display() {
 	
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	GLuint i;
+	glDrawElements(GL_QUADS,numIndices, GL_UNSIGNED_INT, NULL);
 
 
 	glutSwapBuffers();
@@ -65,9 +70,6 @@ void resizeFunction(int w, int h) {
 	glViewport(0,0,w,h);
 	
 }
-
-int numVertices = 0;
-int numIndices = 0;
 
 void InitGeometrie()
 {
@@ -159,8 +161,18 @@ int main(int argc, char **argv) {
 
 	glewInit();
 
-	glClearColor(0.5,0.5,1.0,0.0);
+	glEnable(GL_DEPTH_TEST);
+	GLuint myArray;
+	glGenVertexArrays(1, &myArray); 
+	glBindVertexArray(myArray);
 	InitGeometrie();
+	glEnableVertexAttribArray(myArray);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
+
+
+	glClearColor(0.5,0.5,1.0,0.0);
 
 	glutMainLoop();
 	

@@ -17,4 +17,5 @@ Debug/*
 ipch/
 *.sdf
 *.opensdf
+*.suo
 Planetensystem/Debug/
