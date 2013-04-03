@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <GL\glew.h>
 #include <GL\glut.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "glsl.h"
 
 double dX = -0.9;
 double dY = -0.9;
@@ -144,6 +146,10 @@ int main(int argc, char **argv) {
 
 	glutInit(&argc, argv);
 
+	cwc::glShaderObject vertexShader;
+
+	
+
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(800,800);
 	glutInitWindowPosition(10,10);
@@ -163,6 +169,8 @@ int main(int argc, char **argv) {
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;
+	GLuint program = glCreateProgram();
+	 
 	glGenVertexArrays(1, &myArray); 
 	glBindVertexArray(myArray);
 	InitGeometrie();
