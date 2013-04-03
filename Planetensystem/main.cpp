@@ -66,6 +66,9 @@ void resizeFunction(int w, int h) {
 	
 }
 
+int numVertices = 0;
+int numIndices = 0;
+
 void InitGeometrie()
 {
 	GLuint myBuffers[2] = {0,0};
@@ -73,14 +76,66 @@ void InitGeometrie()
 	
 
 	glGenBuffers(2, myBuffers);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, 0, NULL, GL_STATIC_DRAW);
 
 	//Geometrie
 
+	int thetaStep = 1;
+	int phiStep = 1;
+	int numFloatsPerVertex = 9;
 
+	int numRows = (180/thetaStep);
+	int numCols = (360/phiStep);
+	numVertices = (numRows+1) * numCols;
 	
+	int numFloats = numVertices * numFloatsPerVertex; // Anzahl an Float-Werten
+	float *buffer = new float[numFloats]; 
+	int bufferSize = numFloats * sizeof(float); // Grösse in bytes
+
+	int index = 0;
+	float x,y,z;
+	for(int theta = 0; theta <= 180; theta += thetaStep) {
+		for(int phi = 0; phi < 360; phi += phiStep) {
+			double phiR    = double(phi)*M_PI/180.0;
+			double thetaR  = double(theta)*M_PI/180.0;
+
+			x = sin(thetaR) * cos(phiR);
+			y = sin(thetaR) * sin(phiR);
+			z = cos(thetaR);
+
+			buffer[index++] = (x+1.0)/2.0; // COLOR R
+			buffer[index++] = (y+1.0)/2.0; // COLOR G
+			buffer[index++] = (z+1.0)/2.0; // COLOR B
+			buffer[index++] = x; // Normal X
+			buffer[index++] = y; // Normal Y
+			buffer[index++] = z; // Normal Z
+			buffer[index++] = x; // Position X
+			buffer[index++] = y; // Position Y
+			buffer[index++] = z; // Position Z
+		}
+	}
+
+	numIndices = numRows * numCols * 4;
+	unsigned int *indexBuffer = new unsigned int[numIndices];
+	int indexBufferSize = numIndices * sizeof(unsigned int);
+	index = 0;
+
+	for(int i = 0; i < (numRows); i++) {
+		for(int j = 0; j < numCols; j++) {
+			indexBuffer[index++] =  i    * numCols + j;
+			indexBuffer[index++] =  i    * numCols + (j+1)%numCols;
+			indexBuffer[index++] = (i+1) * numCols + (j+1)%numCols;
+			indexBuffer[index++] = (i+1) * numCols + j;
+		}
+	}
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, bufferSize, buffer, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indexBuffer, GL_STATIC_DRAW);
+
+	delete [] buffer;
 }
 
 int main(int argc, char **argv) {
