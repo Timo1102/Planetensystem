@@ -21,7 +21,7 @@ void display() {
 	
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	GLuint i;
+	
 	glDrawElements(GL_QUADS,numIndices, GL_UNSIGNED_INT, NULL);
 
 
@@ -146,9 +146,16 @@ int main(int argc, char **argv) {
 
 	glutInit(&argc, argv);
 
-	cwc::glShaderObject vertexShader;
 
+	cwc::glShaderManager shaderManager;
 	
+	cwc::glShader *shader = shaderManager.loadfromFile("../shader/vertex.glsl", "../shader/fragment.glsl");
+
+	shader->begin();
+
+	shader->BindAttribLocation(0, "att_vertex");
+	shader->BindAttribLocation(1, "att_normal");
+	shader->BindAttribLocation(2, "att_color");
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(800,800);
