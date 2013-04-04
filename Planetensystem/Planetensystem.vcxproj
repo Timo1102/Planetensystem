@@ -64,9 +64,17 @@
   <ItemGroup>
     <ClCompile Include="glsl.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RK\matrix.cpp" />
+    <ClCompile Include="RK\quaternion.cpp" />
+    <ClCompile Include="RK\vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glsl.h" />
+    <ClInclude Include="RK\datatypes.hpp" />
+    <ClInclude Include="RK\defines.hpp" />
+    <ClInclude Include="RK\matrix.hpp" />
+    <ClInclude Include="RK\quaternion.hpp" />
+    <ClInclude Include="RK\vector.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
