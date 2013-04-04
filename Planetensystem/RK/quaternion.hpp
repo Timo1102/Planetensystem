@@ -7,7 +7,7 @@
 
 namespace RK
 {
-    class RK_LIBRARY Quaternion
+    class Quaternion
     {
         public:
             Quaternion();

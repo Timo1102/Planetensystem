@@ -21,13 +21,13 @@
     <ClCompile Include="glsl.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="RK\vector.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="RK\matrix.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="RK\quaternion.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="RK\vector.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,6 +38,9 @@
     <ClInclude Include="RK\datatypes.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="RK\vector.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="RK\defines.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -45,9 +48,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="RK\quaternion.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="RK\vector.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

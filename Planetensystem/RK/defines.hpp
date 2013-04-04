@@ -38,13 +38,7 @@
 #endif
 
 #if !defined(RK_EXPORT)
-#if defined(RK_COMPILER_MSC)
-#define RK_EXPORT __declspec(dllexport)
-#elif defined(RK_COMPILER_GCC) && defined(RK_SYSTEM_WINDOWS)
-#define RK_EXPORT __attribute__((dllexport))
-#elif defined(RK_COMPILER_GCC)
 #define RK_EXPORT
-#endif
 #endif
 
 #if !defined(RK_IMPORT)
@@ -61,7 +55,7 @@
 #if defined(_WINDLL) || defined(DLL_EXPORT)
 #define RK_LIBRARY RK_EXPORT
 #else
-#define RK_LIBRARY RK_IMPORT
+#define RK_LIBRARY
 #endif
 #endif
 

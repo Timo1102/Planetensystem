@@ -19,3 +19,6 @@ ipch/
 *.opensdf
 *.suo
 Planetensystem/Debug/
+Planetensystem/Release/
+Release/*
+!Release/*.dll

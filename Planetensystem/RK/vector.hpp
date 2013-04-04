@@ -6,7 +6,7 @@
 
 namespace RK
 {
-    class RK_LIBRARY Vector
+    class Vector
     {
         public:
             Vector();

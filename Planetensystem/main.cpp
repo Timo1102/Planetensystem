@@ -5,8 +5,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "glsl.h"
-#include "math\CMatrix.h"
+#include "RK/matrix.hpp"
 
+using namespace RK;
 
 double dX = -0.9;
 double dY = -0.9;
@@ -14,13 +15,18 @@ double dY = -0.9;
 int numVertices = 0;
 int numIndices = 0;
 
-void display() {
+cwc::glShader *shader;
+Matrix modelView;
 
-	
-
+void display() 
+{
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glDrawElements(GL_QUADS,numIndices, GL_UNSIGNED_INT, NULL);
+	modelView = Matrix(Vector(0.0f,0.0f,-5.0f));
+
+	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
+	
+	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
 
 
 	glutSwapBuffers();
@@ -46,7 +52,8 @@ void idleFunction() {
 	glutPostRedisplay();
 }
 
-void resizeFunction(int w, int h) {
+void resizeFunction(int w, int h) 
+{
 
 	double radius = sqrt(3.0); 
 	double viewAngle = M_PI / 3.0; 
@@ -59,26 +66,23 @@ void resizeFunction(int w, int h) {
 	double left = top * aspect;
 	double right = -left;
 
+	/*
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glFrustum(left, right, bottom, top, front, back);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslated(0.0, 0.0, -distance);
+	glTranslated(0.0, 0.0, -distance);*/
 
 	glViewport(0,0,w,h);
-	
 }
 
 void InitGeometrie()
 {
 	GLuint myBuffers[2] = {0,0};
 
-	
-
 	glGenBuffers(2, myBuffers);
-
 
 	//Geometrie
 
@@ -141,8 +145,8 @@ void InitGeometrie()
 	delete [] buffer;
 }
 
-int main(int argc, char **argv) {
-
+int main(int argc, char **argv) 
+{
 	glutInit(&argc, argv);
 
 
@@ -165,7 +169,7 @@ int main(int argc, char **argv) {
 
 	cwc::glShaderManager shaderManager;
 	
-	cwc::glShader *shader = shaderManager.loadfromFile("../Planetensystem/shader/vertex.glsl", "../Planetensystem/shader/fragment.glsl");
+	shader = shaderManager.loadfromFile("../Planetensystem/shader/vertex.glsl", "../Planetensystem/shader/fragment.glsl");
 
 	
 
@@ -175,13 +179,14 @@ int main(int argc, char **argv) {
 
 	shader->begin();
 
-	CMatrix view;
+	
 
-	double m[16];
+	
+	Matrix matrix = Matrix::Perspective(0.1,1000,800,800,75);
+	modelView = Matrix(Vector(0.0f,0.0f,-5.0f));
 
-	view.get(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12], m[13], m[14], m[15]);
-
-	shader->setUniformMatrix4fv("uni_matrix", 1, GL_FALSE, m);
+	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, matrix.data);
+	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;
@@ -190,11 +195,14 @@ int main(int argc, char **argv) {
 	glGenVertexArrays(1, &myArray); 
 	glBindVertexArray(myArray);
 	InitGeometrie();
-	glEnableVertexAttribArray(myArray);
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
-
+	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 
 	glClearColor(0.5,0.5,1.0,0.0);
 
