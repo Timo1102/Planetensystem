@@ -183,10 +183,10 @@ int main(int argc, char **argv)
 
 	
 	Matrix matrix = Matrix::Perspective(0.1,1000,800,800,75);
-	modelView = Matrix(Vector(0.0f,0.0f,-5.0f));
+
 
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, matrix.data);
-	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
+	
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;
