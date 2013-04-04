@@ -6,6 +6,7 @@
 #include <math.h>
 #include "glsl.h"
 #include "RK/matrix.hpp"
+#include <time.h>
 
 using namespace RK;
 
@@ -22,10 +23,14 @@ void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	modelView = Matrix(Vector(0.0f,0.0f,-5.0f));
-
-	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
 	
+
+	modelView = Matrix(Vector(0.0f,0.0f,-5.0f));
+	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
+	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
+
+	modelView = Matrix(Vector(-2.5f,0.0f,-5.0f));
+	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
 
 
@@ -182,8 +187,7 @@ int main(int argc, char **argv)
 	
 
 	
-	Matrix matrix = Matrix::Perspective(0.1,1000,800,800,75);
-
+	Matrix matrix = Matrix::Perspective(0.1,1000,800,800,50);
 
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, matrix.data);
 	
