@@ -72,11 +72,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glsl.h" />
+    <ClInclude Include="gl\glew.h" />
+    <ClInclude Include="gl\glut.h" />
+    <ClInclude Include="GL\glxew.h" />
+    <ClInclude Include="GL\wglew.h" />
     <ClInclude Include="RK\datatypes.hpp" />
     <ClInclude Include="RK\defines.hpp" />
     <ClInclude Include="RK\matrix.hpp" />
     <ClInclude Include="RK\quaternion.hpp" />
     <ClInclude Include="RK\vector.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\fragment.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

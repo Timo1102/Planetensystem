@@ -19,23 +19,30 @@ int numIndices = 0;
 cwc::glShader *shader;
 Matrix modelView;
 
+
+void CreatePlanet(float x, float y, float z)
+{
+	modelView = Matrix(Vector(x,y,z));
+	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
+	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
+}
+
 void display() 
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	
 
-	modelView = Matrix(Vector(0.0f,0.0f,-5.0f));
-	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
-	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
-
-	modelView = Matrix(Vector(-2.5f,0.0f,-5.0f));
-	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
-	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
+	
+	CreatePlanet(0.0f,0.0f,-5.0f);
+	CreatePlanet(-2.0f,0.0f,-5.0f);
 
 
 	glutSwapBuffers();
 }
+
+
+
 
 void mouseButton(int button, int state, int x, int y) {
 

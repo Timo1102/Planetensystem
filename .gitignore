@@ -22,3 +22,4 @@ Planetensystem/Debug/
 Planetensystem/Release/
 Release/*
 !Release/*.dll
+Planetensystem/Planetensystem/Debug/*

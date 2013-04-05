@@ -50,5 +50,20 @@
     <ClInclude Include="RK\quaternion.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="gl\glew.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\wglew.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="gl\glut.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\glxew.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\fragment.glsl" />
   </ItemGroup>
 </Project>
