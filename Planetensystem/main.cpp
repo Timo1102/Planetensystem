@@ -22,8 +22,9 @@ Matrix modelView;
 
 void CreatePlanet(float x, float y, float z, float tx, float ty, float tz)
 {
-	modelView = Matrix(1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,tx,ty,1.2f,tz);
-	modelView *= Matrix(Vector(x,y,z));
+	
+	modelView = Matrix(Vector(x,y,z));
+	modelView *= Matrix(1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,1.0f,1.0) * Vector(tx, ty, tz);
 	
 	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
@@ -36,8 +37,8 @@ void display()
 	
 
 	
-	CreatePlanet(0.0f,0.0f,-10.0f, 1.2f, 1.5f, 1.0f);
-	CreatePlanet(-2.2f,0.0f,-10.0f, 100.0f, 100.0f, 100.0f);
+	CreatePlanet(0.0f,0.0f,-10.0f, 5.0f, 5.5f, 5.0f);
+	CreatePlanet(0.0f,0.0f,-10.0f, 2.02f,2.02f, 2.02f);
 
 
 	glutSwapBuffers();
