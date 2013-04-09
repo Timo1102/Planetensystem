@@ -13,14 +13,18 @@ using namespace RK;
 double dX = -0.9;
 double dY = -0.9;
 
+	
+
 int numVertices = 0;
 int numIndices = 0;
+
+
 
 cwc::glShader *shader;
 Matrix modelView;
 
 
-void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float alpha)
+void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float alphaX, float alphaY, float alphaZ)
 {
 	//modelView = Matrix(1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,tx,ty,tz,1.0);
 	
@@ -31,12 +35,26 @@ void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float
 
 	modelView *= Matrix(Vector(x,y,z));
 
-
-	modelView *=Matrix(cos(alpha), -sin(alpha), 0.0f, 0.0f,
-					   sin(alpha), cos(alpha), 0.0f, 0.0f,
+	//Rotation um die z-Achse
+	modelView *=Matrix(cos(alphaZ), -sin(alphaZ), 0.0f, 0.0f,
+					   sin(alphaZ), cos(alphaZ), 0.0f, 0.0f,
 					   0.0f      , 0.0f      , 1.0f, 0.0f,
 					   0.0f      ,0.0f       , 0.0f , 1.0f);
+	//Rotation um die y-Achse
+	
 
+	modelView *=Matrix(cos(alphaY), 0.0f , sin(alphaY), 0.0f,
+					   0.0f, 1.0f, 0.0f, 0.0f,
+					   -sin(alphaY)    , 0.0f      , cos(alphaY), 0.0f,
+					   0.0f      ,0.0f       , 0.0f , 1.0f);
+	
+	//Rotation um ide x-Achse
+	
+	modelView *=Matrix(1.0f, 0.0f, 0.0f, 0.0f,
+					   0.0f, cos(alphaX),-sin(alphaX), 0.0f,
+					   0.0f      , sin(alphaX) , cos(alphaX), 0.0f,
+					   0.0f      ,0.0f       , 0.0f , 1.0f);
+	
 
 	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
@@ -44,13 +62,23 @@ void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float
 
 void display() 
 {
+	
+	int time;
+	
+
+
+	time=glutGet(GLUT_ELAPSED_TIME);
+
+	
+
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	
 	
 	
-	CreatePlanet(0.0f,0.0f,-10.0f, 1.0f, 1.0f, 1.0f, 20.0f);
-	CreatePlanet(2.0f,0.0f,-10.0f, 0.2f,0.2f, 0.2f, 12.0f);
+	CreatePlanet(0.0f,0.0f,time * 0.002 -15, 1.0f, 1.0f, 1.0f, 0, time * 0.00005, time * 0.002);
+	CreatePlanet(2.0f,0.0f,-10.0f, 0.2f,0.2f, 0.2f, 0, 0, 0);
 
 	
 
@@ -176,6 +204,10 @@ void InitGeometrie()
 int main(int argc, char **argv) 
 {
 	glutInit(&argc, argv);
+
+	
+	
+
 
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
