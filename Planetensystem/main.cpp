@@ -12,76 +12,99 @@ using namespace RK;
 
 double dX = -0.9;
 double dY = -0.9;
-
-	
-
 int numVertices = 0;
 int numIndices = 0;
-
-
-
+float cameraPosition[3] = {0, -5, -10};		    //camera ist an z-position 10
+float cameraRotation[3] = {-22.5f, 0.0f, 0.0f}; //camera rotation in degree
 cwc::glShader *shader;
-Matrix modelView;
 
-
-void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float alphaX, float alphaY, float alphaZ)
+//matrizen
+Matrix Tranlation(float x, float y, float z)
 {
-	//modelView = Matrix(1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,tx,ty,tz,1.0);
-	
-	modelView = Matrix(tx, 0.0f, 0.0f, 0.0f,
+	Matrix mTranslation;
+	//mTranslation = Matrix(Vector(x,y,z));
+	mTranslation = Matrix(1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f, 0.0f,   x, y, z, 1.0);
+
+	return mTranslation;
+}
+
+
+Matrix Scale(float tx, float ty, float tz)
+{
+
+	Matrix mScale;
+		mScale = Matrix(tx, 0.0f, 0.0f, 0.0f,
 		               0.0f, ty, 0.0f, 0.0f,
 					   0.0f, 0.0f, tz, 0.0f,
 					   0.0f, 0.0f, 0.0f, 1.0f);
+		return mScale;
+}
 
-	modelView *= Matrix(Vector(x,y,z));
+
+Matrix Rotation(float alphaXDegree, float alphaYDegree, float alphaZDegree)
+{
+	float alphaX = alphaXDegree/360.0f * 2 * 3.14f;
+	float alphaY = alphaYDegree/360.0f * 2 * 3.14f;
+	float alphaZ = alphaZDegree/360.0f * 2 * 3.14f;
+
 	//Rotation um die z-Achse
-	modelView *=Matrix(cos(alphaZ), -sin(alphaZ), 0.0f, 0.0f,
+	Matrix mRotation;
+
+	mRotation *=Matrix(cos(alphaZ), -sin(alphaZ), 0.0f, 0.0f,
 					   sin(alphaZ), cos(alphaZ), 0.0f, 0.0f,
 					   0.0f      , 0.0f      , 1.0f, 0.0f,
 					   0.0f      ,0.0f       , 0.0f , 1.0f);
 	//Rotation um die y-Achse
 	
 
-	modelView *=Matrix(cos(alphaY), 0.0f , sin(alphaY), 0.0f,
+	mRotation *=Matrix(cos(alphaY), 0.0f , sin(alphaY), 0.0f,
 					   0.0f, 1.0f, 0.0f, 0.0f,
 					   -sin(alphaY)    , 0.0f      , cos(alphaY), 0.0f,
 					   0.0f      ,0.0f       , 0.0f , 1.0f);
 	
 	//Rotation um ide x-Achse
 	
-	modelView *=Matrix(1.0f, 0.0f, 0.0f, 0.0f,
+	mRotation *=Matrix(1.0f, 0.0f, 0.0f, 0.0f,
 					   0.0f, cos(alphaX),-sin(alphaX), 0.0f,
 					   0.0f      , sin(alphaX) , cos(alphaX), 0.0f,
 					   0.0f      ,0.0f       , 0.0f , 1.0f);
+
+	return mRotation;
+}
+
+void CreatePlanet(Matrix modelMatrix)
+{
+	shader->begin();
 	
+	Matrix projectionMatrix = Matrix::Perspective(0.1,1000,800,800,50);
+	Matrix viewMatrix = Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]) * Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]);
 
-	modelView *= Matrix(Vector(x,y,z));
-
-	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
+	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, projectionMatrix.data);
+	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, viewMatrix.data);
+	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, modelMatrix.data);
+	
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
 }
 
+
 void display() 
 {
-	
-	int time;
-	
+	int time = 0;
+	Matrix mMatrix;
 
+	time = glutGet(GLUT_ELAPSED_TIME);
 
-	time=glutGet(GLUT_ELAPSED_TIME);
-
-	
-	
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	
-	
-	
-	CreatePlanet(0.0f,0.0f, -10, 1.0f, 1.0f, 1.0f,  0, 0,0);
-	CreatePlanet(0.5f,0.0f,-10.0f, 0.2f,0.2f, 0.2f, time * 0.002, time * 0.002, time * 0.002);
+	//Sonne
+	mMatrix = Rotation(0,time * 0.09f, 0);
+	CreatePlanet(mMatrix);	
 
-	
+	//Erde
+	mMatrix = Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0) * Tranlation(6.0f, 0.0f, 0.0f) * Scale(0.5f,0.5f,0.5f) * Rotation(0, time * 0.1f, 0);
+	CreatePlanet(mMatrix);	
 
 	glutSwapBuffers();
 }
@@ -89,29 +112,29 @@ void display()
 
 
 
-void mouseButton(int button, int state, int x, int y) {
-
+void mouseButton(int button, int state, int x, int y) 
+{
 	dX =  2.0*double(x)/800.0 - 1.0;
 	dY = -2.0*double(y)/600.0 + 1.0;
 
 	glutPostRedisplay();
 }
 
-void mouseMove(int x, int y) {
-
+void mouseMove(int x, int y) 
+{
 	dX =  2.0*double(x)/800.0 - 1.0;
 	dY = -2.0*double(y)/600.0 + 1.0;
 
 	glutPostRedisplay();
 }
 
-void idleFunction() {
+void idleFunction() 
+{
 	glutPostRedisplay();
 }
 
 void resizeFunction(int w, int h) 
 {
-
 	double radius = sqrt(3.0); 
 	double viewAngle = M_PI / 3.0; 
 	double distance = radius / sin(viewAngle/2.0);
@@ -122,15 +145,6 @@ void resizeFunction(int w, int h)
 	double bottom = -top;
 	double left = top * aspect;
 	double right = -left;
-
-	/*
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glFrustum(left, right, bottom, top, front, back);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslated(0.0, 0.0, -distance);*/
 
 	glViewport(0,0,w,h);
 }
@@ -157,8 +171,10 @@ void InitGeometrie()
 
 	int index = 0;
 	float x,y,z;
-	for(int theta = 0; theta <= 180; theta += thetaStep) {
-		for(int phi = 0; phi < 360; phi += phiStep) {
+	for(int theta = 0; theta <= 180; theta += thetaStep) 
+	{
+		for(int phi = 0; phi < 360; phi += phiStep) 
+		{
 			double phiR    = double(phi)*M_PI/180.0;
 			double thetaR  = double(theta)*M_PI/180.0;
 
@@ -205,18 +221,10 @@ void InitGeometrie()
 int main(int argc, char **argv) 
 {
 	glutInit(&argc, argv);
-
-	
-	
-
-
-
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(800,800);
 	glutInitWindowPosition(10,10);
 	glutCreateWindow("OpenGL");
-	
-
 
 	glutDisplayFunc(display);
 	glutMouseFunc(mouseButton); 
@@ -230,23 +238,12 @@ int main(int argc, char **argv)
 
 	cwc::glShaderManager shaderManager;
 	
+	shader = nullptr;
 	shader = shaderManager.loadfromFile("../Planetensystem/shader/vertex.glsl", "../Planetensystem/shader/fragment.glsl");
-
-	
 
 	shader->BindAttribLocation(0, "att_vertex");
 	shader->BindAttribLocation(1, "att_normal");
 	shader->BindAttribLocation(2, "att_color");
-
-	shader->begin();
-
-	
-
-	
-	Matrix matrix = Matrix::Perspective(0.1,1000,800,800,50);
-
-	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, matrix.data);
-	
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;
