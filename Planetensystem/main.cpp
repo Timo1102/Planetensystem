@@ -34,7 +34,6 @@ void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float
 					   0.0f, 0.0f, 0.0f, 1.0f);
 
 	modelView *= Matrix(Vector(x,y,z));
-
 	//Rotation um die z-Achse
 	modelView *=Matrix(cos(alphaZ), -sin(alphaZ), 0.0f, 0.0f,
 					   sin(alphaZ), cos(alphaZ), 0.0f, 0.0f,
@@ -56,6 +55,8 @@ void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float
 					   0.0f      ,0.0f       , 0.0f , 1.0f);
 	
 
+	modelView *= Matrix(Vector(x,y,z));
+
 	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
 }
@@ -70,15 +71,15 @@ void display()
 	time=glutGet(GLUT_ELAPSED_TIME);
 
 	
-
+	
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	
 	
 	
-	CreatePlanet(0.0f,0.0f,time * 0.002 -15, 1.0f, 1.0f, 1.0f, 0, time * 0.00005, time * 0.002);
-	CreatePlanet(2.0f,0.0f,-10.0f, 0.2f,0.2f, 0.2f, 0, 0, 0);
+	CreatePlanet(0.0f,0.0f, -10, 1.0f, 1.0f, 1.0f,  0, 0,0);
+	CreatePlanet(0.5f,0.0f,-10.0f, 0.2f,0.2f, 0.2f, time * 0.002, time * 0.002, time * 0.002);
 
 	
 
