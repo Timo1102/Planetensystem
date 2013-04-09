@@ -20,12 +20,24 @@ cwc::glShader *shader;
 Matrix modelView;
 
 
-void CreatePlanet(float x, float y, float z, float tx, float ty, float tz)
+void CreatePlanet(float x, float y, float z, float tx, float ty, float tz, float alpha)
 {
+	//modelView = Matrix(1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,tx,ty,tz,1.0);
 	
-	modelView = Matrix(Vector(x,y,z));
-	modelView *= Matrix(1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,1.0f,1.0) * Vector(tx, ty, tz);
-	
+	modelView = Matrix(tx, 0.0f, 0.0f, 0.0f,
+		               0.0f, ty, 0.0f, 0.0f,
+					   0.0f, 0.0f, tz, 0.0f,
+					   0.0f, 0.0f, 0.0f, 1.0f);
+
+	modelView *= Matrix(Vector(x,y,z));
+
+
+	modelView *=Matrix(cos(alpha), -sin(alpha), 0.0f, 0.0f,
+					   sin(alpha), cos(alpha), 0.0f, 0.0f,
+					   0.0f      , 0.0f      , 1.0f, 0.0f,
+					   0.0f      ,0.0f       , 0.0f , 1.0f);
+
+
 	shader->setUniformMatrix4fv("uni_modelView", 1, GL_FALSE, modelView.data);
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
 }
@@ -35,11 +47,12 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	
+	
+	
+	CreatePlanet(0.0f,0.0f,-10.0f, 1.0f, 1.0f, 1.0f, 20.0f);
+	CreatePlanet(2.0f,0.0f,-10.0f, 0.2f,0.2f, 0.2f, 12.0f);
 
 	
-	CreatePlanet(0.0f,0.0f,-10.0f, 5.0f, 5.5f, 5.0f);
-	CreatePlanet(0.0f,0.0f,-10.0f, 2.02f,2.02f, 2.02f);
-
 
 	glutSwapBuffers();
 }
