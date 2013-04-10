@@ -14,8 +14,11 @@ double dX = -0.9;
 double dY = -0.9;
 int numVertices = 0;
 int numIndices = 0;
-float cameraPosition[3] = {0, -5, -10};		    //camera ist an z-position 10
-float cameraRotation[3] = {-22.5f, 0.0f, 0.0f}; //camera rotation in degree
+//float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
+//float cameraRotation[3] = {-45.5f, 0.0f, 0.0f}; //camera rotation in degree
+float cameraPosition[3] = {0, -20, 0};		    //camera ist an z-position 10
+float cameraRotation[3] = {-90.f, 0.0f, 0.0f};
+float Light[3] = {0.f, 0.0f, 0.0f}; //camera rotation in degree
 cwc::glShader *shader;
 
 //matrizen
@@ -43,9 +46,9 @@ Matrix Scale(float tx, float ty, float tz)
 
 Matrix Rotation(float alphaXDegree, float alphaYDegree, float alphaZDegree)
 {
-	float alphaX = alphaXDegree/360.0f * 2 * 3.14f;
-	float alphaY = alphaYDegree/360.0f * 2 * 3.14f;
-	float alphaZ = alphaZDegree/360.0f * 2 * 3.14f;
+	float alphaX = alphaXDegree/360.0f * 2 * M_PI;
+	float alphaY = alphaYDegree/360.0f * 2 * M_PI;
+	float alphaZ = alphaZDegree/360.0f * 2 * M_PI;
 
 	//Rotation um die z-Achse
 	Matrix mRotation;
@@ -77,12 +80,14 @@ void CreatePlanet(Matrix modelMatrix)
 	shader->begin();
 	
 	Matrix projectionMatrix = Matrix::Perspective(0.1,1000,800,800,50);
+	//Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 	Matrix viewMatrix = Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]) * Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]);
 
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, projectionMatrix.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, viewMatrix.data);
 	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, modelMatrix.data);
-	
+	shader->setUniform3fv("uni_light", 1, Light);
+
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
 }
 
@@ -91,6 +96,8 @@ void display()
 {
 	int time = 0;
 	Matrix mMatrix;
+	Matrix mErde;
+	Matrix mMars;
 
 	time = glutGet(GLUT_ELAPSED_TIME);
 
@@ -103,8 +110,25 @@ void display()
 	CreatePlanet(mMatrix);	
 
 	//Erde
-	mMatrix = Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0) * Tranlation(6.0f, 0.0f, 0.0f) * Scale(0.5f,0.5f,0.5f) * Rotation(0, time * 0.1f, 0);
+	mErde =  Tranlation(3.5f + 1.5 * sinf(time * 0.01f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, time * 0.01f, 0) * Rotation(0, 180, 25);
+	mMatrix = Scale(0.2f,0.2f,0.2f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.29f, 0) * mErde ;
 	CreatePlanet(mMatrix);	
+
+	//Mond
+	//mMatrix = mErde * Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0)  * Tranlation(12.0f, 0.0f, 0.0f) * Scale(0.18f,0.18f,0.18f) ;
+	mMatrix = Scale(0.06f,0.06f,0.06f) * Tranlation(0.50f, 0.0f, 0.0f) * Rotation(0,time * 0.39f, 0) * mErde;
+	CreatePlanet(mMatrix);
+
+	//Mars
+	mMars = Tranlation(6.0f + 1.5 * sinf(-time * 0.09f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, -time * 0.09f, 0) * Rotation(0, 180, 25);
+	mMatrix = Scale(0.5f,0.5f,0.5f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.29f, 0) * mMars;
+	CreatePlanet(mMatrix);
+
+
+	//Mars Mond1
+
+
+
 
 	glutSwapBuffers();
 }
@@ -117,13 +141,20 @@ void mouseButton(int button, int state, int x, int y)
 	dX =  2.0*double(x)/800.0 - 1.0;
 	dY = -2.0*double(y)/600.0 + 1.0;
 
+
+
 	glutPostRedisplay();
 }
 
 void mouseMove(int x, int y) 
 {
 	dX =  2.0*double(x)/800.0 - 1.0;
-	dY = -2.0*double(y)/600.0 + 1.0;
+	dY = -2.0*double(y)/800.0 + 1.0;
+
+	cameraRotation[0] = dY * 45.0 - 90.0;
+	cameraRotation[2] = dX * 45;
+
+	printf("dX: %g dY: %g \n", dX, dY);
 
 	glutPostRedisplay();
 }

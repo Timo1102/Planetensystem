@@ -3,6 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Planetensystem", "Planetensystem\Planetensystem.vcxproj", "{F60BA1B8-BEA9-451F-94CD-4CAD7CAC87EC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14ADD9D2-4C10-47AB-888F-76E3DDCF15A6}"
+	ProjectSection(SolutionItems) = preProject
+		Data\earthmap.jpg = Data\earthmap.jpg
+		Data\mars.jpg = Data\mars.jpg
+		Data\moonmap.jpg = Data\moonmap.jpg
+		Data\space.jpg = Data\space.jpg
+		Data\sunmap.jpg = Data\sunmap.jpg
+		Data\venusmap.jpg = Data\venusmap.jpg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
