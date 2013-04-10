@@ -7,6 +7,8 @@
 #include "glsl.h"
 #include "RK/matrix.hpp"
 #include <time.h>
+#include <string>
+using namespace std;
 
 using namespace RK;
 
@@ -14,6 +16,11 @@ double dX = -0.9;
 double dY = -0.9;
 int numVertices = 0;
 int numIndices = 0;
+
+//TextureID's
+GLuint textures[4];
+
+
 //float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
 //float cameraRotation[3] = {-45.5f, 0.0f, 0.0f}; //camera rotation in degree
 float cameraPosition[3] = {0, -20, 0};		    //camera ist an z-position 10
@@ -22,6 +29,8 @@ float Light[3] = {0.f, 0.0f, 0.0f}; //camera rotation in degree
 cwc::glShader *shader;
 
 //matrizen
+GLuint LoadBmp(string );
+
 Matrix Tranlation(float x, float y, float z)
 {
 	Matrix mTranslation;
@@ -87,7 +96,7 @@ void CreatePlanet(Matrix modelMatrix)
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, viewMatrix.data);
 	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, modelMatrix.data);
 	shader->setUniform3fv("uni_light", 1, Light);
-
+	shader->setUniform1i("uni_texture", 0);
 	glDrawElements(GL_QUADS, numIndices, GL_UNSIGNED_INT, NULL);
 }
 
@@ -107,6 +116,7 @@ void display()
 	
 	//Sonne
 	mMatrix = Rotation(0,time * 0.09f, 0);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	CreatePlanet(mMatrix);	
 
 	//Erde
@@ -247,7 +257,18 @@ void InitGeometrie()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indexBuffer, GL_STATIC_DRAW);
 
 	delete [] buffer;
+
+	//LoadTextures
+	textures[0] = LoadBmp("../Data/earthmap.bmp");
+	textures[1] = LoadBmp("../Data/sunmap.bmp");
+	textures[2] = LoadBmp("../Data/mars.bmp");
+	textures[3] = LoadBmp("../Data/moonmap.bmp");
+
+
 }
+
+
+
 
 int main(int argc, char **argv) 
 {
@@ -275,6 +296,7 @@ int main(int argc, char **argv)
 	shader->BindAttribLocation(0, "att_vertex");
 	shader->BindAttribLocation(1, "att_normal");
 	shader->BindAttribLocation(2, "att_color");
+	glBindFragDataLocation(shader->GetProgramObject(), 0, "r_color");
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;
