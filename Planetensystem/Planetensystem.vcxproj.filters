@@ -65,6 +65,9 @@
     <ClInclude Include="GL\glxew.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="bmpLoad.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />

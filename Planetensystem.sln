@@ -5,12 +5,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Planetensystem", "Planetens
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14ADD9D2-4C10-47AB-888F-76E3DDCF15A6}"
 	ProjectSection(SolutionItems) = preProject
-		Data\earthmap.jpg = Data\earthmap.jpg
-		Data\mars.jpg = Data\mars.jpg
-		Data\moonmap.jpg = Data\moonmap.jpg
-		Data\space.jpg = Data\space.jpg
-		Data\sunmap.jpg = Data\sunmap.jpg
-		Data\venusmap.jpg = Data\venusmap.jpg
+		Data\earthmap.bmp = Data\earthmap.bmp
+		Data\mars.bmp = Data\mars.bmp
+		Data\moonmap.bmp = Data\moonmap.bmp
+		Data\space.bmp = Data\space.bmp
+		Data\sunmap.bmp = Data\sunmap.bmp
+		Data\venusmap.bmp = Data\venusmap.bmp
 	EndProjectSection
 EndProject
 Global

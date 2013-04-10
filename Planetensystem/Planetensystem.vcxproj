@@ -72,6 +72,7 @@
     <ClCompile Include="RK\vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bmpLoad.h" />
     <ClInclude Include="glsl.h" />
     <ClInclude Include="gl\glew.h" />
     <ClInclude Include="gl\glut.h" />

@@ -7,7 +7,8 @@
 #include "glsl.h"
 #include "RK/matrix.hpp"
 #include <time.h>
-#include "bmpLoad.h"
+#include <string>
+using namespace std;
 
 using namespace RK;
 
@@ -15,6 +16,14 @@ double dX = -0.9;
 double dY = -0.9;
 int numVertices = 0;
 int numIndices = 0;
+<<<<<<< HEAD
+float cameraPosition[3] = {0, -5, -10};		    //camera ist an z-position 10
+float cameraRotation[3] = {-50.5f, 0.0f, 0.0f}; //camera rotation in degree
+cwc::glShader *shader;
+
+//matrizen
+Matrix Translation(float x, float y, float z)
+=======
 
 //TextureID's
 GLuint textures[4];
@@ -22,14 +31,16 @@ GLuint textures[4];
 
 //float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
 //float cameraRotation[3] = {-45.5f, 0.0f, 0.0f}; //camera rotation in degree
-float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
-float cameraRotation[3] = {-15.f, 0.0f, 0.0f};
+float cameraPosition[3] = {0, -20, 0};		    //camera ist an z-position 10
+float cameraRotation[3] = {-90.f, 0.0f, 0.0f};
 float Light[3] = {0.f, 0.0f, 0.0f}; //camera rotation in degree
 cwc::glShader *shader;
 
 //matrizen
+GLuint LoadBmp(string );
 
 Matrix Tranlation(float x, float y, float z)
+>>>>>>> origin/master
 {
 	Matrix mTranslation;
 	//mTranslation = Matrix(Vector(x,y,z));
@@ -87,10 +98,12 @@ void CreatePlanet(Matrix modelMatrix)
 	shader->begin();
 	
 	Matrix projectionMatrix = Matrix::Perspective(0.1,1000,800,800,50);
+<<<<<<< HEAD
+	Matrix viewMatrix = Translation(cameraPosition[0], cameraPosition[1], cameraPosition[2]) * Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]);
+=======
 	//Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
-	Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
-
-
+	Matrix viewMatrix = Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]) * Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]);
+>>>>>>> origin/master
 
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, projectionMatrix.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, viewMatrix.data);
@@ -120,6 +133,23 @@ void display()
 	CreatePlanet(mMatrix);	
 
 	//Erde
+<<<<<<< HEAD
+	mMatrix = Translation(6.0f, 0.0f, 0.0f) * Scale(0.5f,0.5f,0.5f);
+	//CreatePlanet(mMatrix);
+	
+	mMatrix *= Translation(0.0f,0.0f,0.0f) * Scale(0.5f,0.5f,0.5f);
+	//mMatrix = Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0) * Translation(6.0f, 0.0f, 0.0f) * Scale(0.5f,0.5f,0.5f) * Rotation(0, time * 0.2f, 0) * Rotation(0,0,15);
+	CreatePlanet(mMatrix);	
+
+	
+	//Mars
+	//mMatrix *= Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0) * Translation(-10.0f, 0.0f, 0.0f) * Scale(0.9f,0.9f,0.9f) * Rotation(0, time * 0.09f, 0) * Rotation(0,0,15);
+	//CreatePlanet(mMatrix);	
+
+	//Mond
+	//mMatrix =;
+	//CreatePlanet(mMatrix);
+=======
 	mErde =  Tranlation(3.5f + 1.5 * sinf(time * 0.01f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, time * 0.01f, 0) * Rotation(0, 180, 25);
 	mMatrix = Scale(0.2f,0.2f,0.2f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.29f, 0) * mErde ;
 	CreatePlanet(mMatrix);	
@@ -134,65 +164,85 @@ void display()
 	mMatrix = Scale(0.5f,0.5f,0.5f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.29f, 0) * mMars;
 	CreatePlanet(mMatrix);
 
-	
-	//Mars Mond1
-	mMatrix = Scale(0.18f,0.18f,0.18f) * Tranlation(1.1f, 0.0f, 0.0f) * Rotation(0,time * 0.29f, 0) *  mMars;
-	CreatePlanet(mMatrix);
 
-	//Mars Mond2
-	mMatrix = Scale(0.11f,0.11f,0.11f) * Tranlation(2.1f, 0.0f, 0.0f) * Rotation(0,-time * 0.2f, 0) *  mMars;
-	CreatePlanet(mMatrix);
+	//Mars Mond1
+
+
+>>>>>>> origin/master
+
 
 	glutSwapBuffers();
 }
 
-void keyboard(unsigned char key, int x, int y)
-{
-switch(key) {
-	case 'w':
-		cameraPosition[2] += 0.1;
-	break;
-	case 'a':
-		cameraPosition[0] += 0.1;
-	break;
-		case 's':
-			cameraPosition[2] -= 0.1;
-	break;
-		case 'd':
-			cameraPosition[0] -= 0.1;
-	break;
-		case 'q':
-			cameraPosition[1] += 0.1;
-	break;
-		case 'e':
-			cameraPosition[1] -= 0.1;
-	break;
-}
-}
 
 
 
 void mouseButton(int button, int state, int x, int y) 
 {
 	dX =  2.0*double(x)/800.0 - 1.0;
-	dY = -2.0*double(y)/600.0 + 1.0;
+	dY = -2.0*double(y)/800.0 + 1.0;
 
+<<<<<<< HEAD
+	printf("Button: %d state: %d x: %d y: %d dX: %d dY: %d \n", button, state, x, y, dX, dY);
+	//cameraRotation[0] = cameraPosition[0] * dX;
+
+
+
+	
+	//glutPostRedisplay();
+=======
 
 
 	glutPostRedisplay();
+>>>>>>> origin/master
 }
 
 void mouseMove(int x, int y) 
 {
+<<<<<<< HEAD
+	//dX =  2.0*double(x)/800.0 - 1.0;
+	//dY = -2.0*double(y)/600.0 + 1.0;
+
+	printf("x: %d y: %d ", x, y);
+
+
+	//cameraRotation[0] = x/800;//dX;
+	//cameraRotation[1] = y/600;//dY;
+	//glutPostRedisplay();
+}
+
+void Keyboard(unsigned char key, int x, int y)
+{
+	switch(key) {
+		case 'w':
+		cameraPosition[2] += 0.5f;
+		break;
+		case 's':
+		cameraPosition[2] -= 0.5f;
+		break;
+		case 'a':
+		cameraPosition[0] += 0.5f;
+		break;
+		case 'd':
+		cameraPosition[0] -= 0.5f;
+		break;
+		case 'q':
+		cameraPosition[1] += 0.5f;
+		break;
+		case 'e':
+		cameraPosition[1] -= 0.5f;
+		break;
+	}
+=======
 	dX =  2.0*double(x)/800.0 - 1.0;
 	dY = -2.0*double(y)/800.0 + 1.0;
 
-	cameraRotation[1] = dY * 45;
-	cameraRotation[0] = dX * 45;
+	cameraRotation[0] = dY * 45.0 - 90.0;
+	cameraRotation[2] = dX * 45;
 
 	printf("dX: %g dY: %g \n", dX, dY);
+>>>>>>> origin/master
 
-	glutPostRedisplay();
 }
 
 void idleFunction() 
@@ -213,7 +263,7 @@ void resizeFunction(int w, int h)
 	double left = top * aspect;
 	double right = -left;
 
-	glViewport(0,0,w,h);
+	//glViewport(0,0,w,h);
 }
 
 void InitGeometrie()
@@ -285,10 +335,10 @@ void InitGeometrie()
 	delete [] buffer;
 
 	//LoadTextures
-	//textures[0] = LoadBmp("../Data/earthmap.bmp");
-	//textures[1] = LoadBmp("../Data/sunmap.bmp");
-	//textures[2] = LoadBmp("../Data/mars.bmp");
-	//textures[3] = LoadBmp("../Data/moonmap.bmp");
+	textures[0] = LoadBmp("../Data/earthmap.bmp");
+	textures[1] = LoadBmp("../Data/sunmap.bmp");
+	textures[2] = LoadBmp("../Data/mars.bmp");
+	textures[3] = LoadBmp("../Data/moonmap.bmp");
 
 
 }
@@ -303,10 +353,11 @@ int main(int argc, char **argv)
 	glutInitWindowSize(800,800);
 	glutInitWindowPosition(10,10);
 	glutCreateWindow("OpenGL");
-	glutKeyboardFunc(keyboard);
+
 	glutDisplayFunc(display);
 	glutMouseFunc(mouseButton); 
 	glutMotionFunc(mouseMove);
+	glutKeyboardFunc(Keyboard);
 	glutIdleFunc(idleFunction);
 	glutReshapeFunc(resizeFunction);
 	
@@ -322,7 +373,7 @@ int main(int argc, char **argv)
 	shader->BindAttribLocation(0, "att_vertex");
 	shader->BindAttribLocation(1, "att_normal");
 	shader->BindAttribLocation(2, "att_color");
-	//glBindFragDataLocation(shader->GetProgramObject(), 0, "r_color");
+	glBindFragDataLocation(shader->GetProgramObject(), 0, "r_color");
 
 	glEnable(GL_DEPTH_TEST);
 	GLuint myArray;

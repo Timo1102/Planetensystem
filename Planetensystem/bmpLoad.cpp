@@ -1,9 +1,6 @@
-#include <iostream>   
-#include <fstream>
-#include <GL/glew.h>
-using namespace std;
+#include "bmpLoad.h"
 
-GLuint LoadBmp(string filename)
+GLuint LoadBmp(const string &filename)
 {
 
 				ifstream stream;
