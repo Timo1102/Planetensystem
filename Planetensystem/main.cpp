@@ -288,14 +288,24 @@ void InitGeometrie()
 		}
 	}
 
-
+	glBindVertexArray(myArray[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[1]);
+
+
+
+
+	
 	glBufferData(GL_ARRAY_BUFFER, bufferSize, buffer, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[1]);
+	
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indexBuffer, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
 
-	delete [] buffer;
+
+	
 
 	//LoadTextures
 	textures[0] = LoadBmps("../Data/earthmap.bmp");
@@ -327,7 +337,7 @@ void InitGeometrie()
         0, 1, 2,3
     };
 
-
+	 	glBindVertexArray(myArray[1]);
 
 	 glGenBuffers(1, &buffer_vertices);
     glGenBuffers(1, &buffer_indices);
@@ -337,6 +347,13 @@ void InitGeometrie()
 
 	  glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
+
+
+	delete [] buffer;
 
 }
 
@@ -382,22 +399,9 @@ int main(int argc, char **argv)
 	
 
 
-	glBindVertexArray(myArray[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[1]);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
 	
-	glBindVertexArray(myArray[1]);
 
-	glBindBuffer(GL_ARRAY_BUFFER, buffer_vertices);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_indices);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
 
 
 
