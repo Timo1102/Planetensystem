@@ -118,11 +118,10 @@ void display()
 
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
 
 
 
-	glBindVertexArray(myArray[1]);
+	glBindVertexArray(myArray[0]);
 
 	//Sonne
 	mMatrix = Rotation(0,time * 0.09f, 0);
@@ -157,6 +156,14 @@ void display()
 	mMatrix = Scale(0.11f,0.11f,0.11f) * Tranlation(2.1f, 0.0f, 0.0f) * Rotation(0,-time * 0.2f, 0) *  mMars;
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
+
+		Matrix ortho = Matrix::Orthogonal(0.1,1000,1,1);
+
+	glBindVertexArray(myArray[1]);
+	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, ortho.data);
+	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, Matrix().data);
+	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, Tranlation(0,0,-990).data);
+	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
 
 	glutSwapBuffers();
 }
@@ -304,7 +311,9 @@ void InitGeometrie()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
 
-
+		glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 	
 
 	//LoadTextures
@@ -319,18 +328,18 @@ void InitGeometrie()
 	GLuint buffer_indices;
 
 	 GLfloat vertices[] = {
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
         0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, -1.0f,
-		0.0f, 1.0f, -1.0f,
-		0.0f, 0.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
 		0.0f, 0.0f, 1.0f,
 		1.0f, 1.0f, -1.0f,
-		0.0f, 0.0f, 1.0f,
 		1.0f, 1.0f, -1.0f,
-		1.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
     };
 
 	 GLuint indices[] = {
@@ -352,6 +361,9 @@ void InitGeometrie()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
 
+		glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 
 	delete [] buffer;
 
@@ -393,9 +405,11 @@ int main(int argc, char **argv)
 	
 	GLuint program = glCreateProgram();
 	
+	glGenVertexArrays(2, myArray); 
+
 	InitGeometrie();
 
-	glGenVertexArrays(2, myArray); 
+	
 	
 
 
@@ -405,9 +419,7 @@ int main(int argc, char **argv)
 
 
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+
 
 	glClearColor(0.5,0.5,1.0,0.0);
 
