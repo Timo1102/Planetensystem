@@ -113,6 +113,11 @@ void display()
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+
+
+
+	
+
 	
 	//Sonne
 	mMatrix = Rotation(0,time * 0.09f, 0);
@@ -121,26 +126,31 @@ void display()
 
 	//Erde
 	mErde =  Tranlation(3.5f + 1.5 * sinf(time * 0.01f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, time * 0.01f, 0) * Rotation(0, 180, 25);
-	mMatrix = Scale(0.2f,0.2f,0.2f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.29f, 0) * mErde ;
+	mMatrix = Scale(0.2f,0.2f,0.2f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.19f, 0) * mErde ;
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	CreatePlanet(mMatrix);	
 
 	//Mond
 	//mMatrix = mErde * Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0)  * Tranlation(12.0f, 0.0f, 0.0f) * Scale(0.18f,0.18f,0.18f) ;
-	mMatrix = Scale(0.06f,0.06f,0.06f) * Tranlation(0.50f, 0.0f, 0.0f) * Rotation(0,time * 0.39f, 0) * mErde;
+	mMatrix = Scale(0.06f,0.06f,0.06f) * Tranlation(0.50f, 0.0f, 0.0f) * Rotation(0,time * 0.09f, 0) * mErde;
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
 
 	//Mars
 	mMars = Tranlation(6.0f + 1.5 * sinf(-time * 0.09f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, -time * 0.09f, 0) * Rotation(0, 180, 25);
 	mMatrix = Scale(0.5f,0.5f,0.5f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.29f, 0) * mMars;
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
 	CreatePlanet(mMatrix);
 
 	
 	//Mars Mond1
 	mMatrix = Scale(0.18f,0.18f,0.18f) * Tranlation(1.1f, 0.0f, 0.0f) * Rotation(0,time * 0.29f, 0) *  mMars;
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
 
 	//Mars Mond2
 	mMatrix = Scale(0.11f,0.11f,0.11f) * Tranlation(2.1f, 0.0f, 0.0f) * Rotation(0,-time * 0.2f, 0) *  mMars;
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
 
 	glutSwapBuffers();
@@ -290,6 +300,33 @@ void InitGeometrie()
 	textures[2] = LoadBmps("../Data/mars.bmp");
 	textures[3] = LoadBmps("../Data/moonmap.bmp");
 
+	
+	//hintergrund
+	GLuint buffer_vertices;
+	GLuint buffer_indices;
+
+	 GLfloat vertices[] = {
+        0.0f, 0.0f, -1.0f,
+        0.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 0.0f, -1.0f,
+    };
+
+	 GLuint indices[] = {
+        1, 0, 2,
+        3, 2, 0,
+    };
+
+
+
+	 glGenBuffers(1, &buffer_vertices);
+    glGenBuffers(1, &buffer_indices);
+
+	 glBindBuffer(GL_ARRAY_BUFFER, buffer_vertices);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_indices);
+
+	  glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
 }
 
