@@ -119,6 +119,17 @@ void display()
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			Matrix ortho = Matrix::Orthogonal(0.1,1000,1,1);
+
+	glBindVertexArray(myArray[1]);
+	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, ortho.data);
+	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, Matrix().data);
+	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, Tranlation(0,0,-10).data);
+	glBindTexture(GL_TEXTURE_2D, textures[4]);
+
+	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
+
+	glClear(GL_DEPTH_BUFFER_BIT);
 
 
 	glBindVertexArray(myArray[0]);
@@ -157,13 +168,7 @@ void display()
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
 
-		Matrix ortho = Matrix::Orthogonal(0.1,1000,1,1);
 
-	glBindVertexArray(myArray[1]);
-	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, ortho.data);
-	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, Matrix().data);
-	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, Tranlation(0,0,-990).data);
-	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
 
 	glutSwapBuffers();
 }
@@ -321,7 +326,7 @@ void InitGeometrie()
 	textures[1] = LoadBmps("../Data/sunmap.bmp");
 	textures[2] = LoadBmps("../Data/mars.bmp");
 	textures[3] = LoadBmps("../Data/moonmap.bmp");
-
+	textures[4] = LoadBmps("../Data/space.bmp");
 	
 	//hintergrund
 	GLuint buffer_vertices;
