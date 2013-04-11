@@ -17,7 +17,7 @@ int numVertices = 0;
 int numIndices = 0;
 
 //TextureID's
-GLuint textures[4];
+GLuint textures[5];
 
 GLuint buffer_vertices;
 GLuint buffer_indices;
@@ -95,8 +95,6 @@ void CreatePlanet(Matrix modelMatrix)
 	Matrix projectionMatrix = Matrix::Perspective(0.1,1000,800,800,50);
 	//Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 	Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
-
-
 
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, projectionMatrix.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, viewMatrix.data);
@@ -413,18 +411,6 @@ int main(int argc, char **argv)
 	glGenVertexArrays(2, myArray); 
 
 	InitGeometrie();
-
-	
-	
-
-
-
-	
-
-
-
-
-
 
 	glClearColor(0.5,0.5,1.0,0.0);
 
