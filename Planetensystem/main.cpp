@@ -23,7 +23,7 @@ GLuint buffer_vertices;
 GLuint buffer_indices;
 
 	GLuint myBuffers[2] = {0,0};
-
+	GLuint myArray[2];
 
 
 //float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
@@ -122,7 +122,7 @@ void display()
 
 
 
-
+	glBindVertexArray(myArray[1]);
 
 	//Sonne
 	mMatrix = Rotation(0,time * 0.09f, 0);
@@ -332,7 +332,8 @@ void InitGeometrie()
 	 glGenBuffers(1, &buffer_vertices);
     glGenBuffers(1, &buffer_indices);
 
-
+	glBindBuffer(GL_ARRAY_BUFFER, buffer_vertices);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_indices);
 
 	  glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW);
@@ -371,15 +372,15 @@ int main(int argc, char **argv)
 	//glBindFragDataLocation(shader->GetProgramObject(), 0, "r_color");
 
 	glEnable(GL_DEPTH_TEST);
-	GLuint myArray[2];
+	
 	
 	GLuint program = glCreateProgram();
 	
 	InitGeometrie();
 
-	glGenVertexArrays(1, myArray); 
+	glGenVertexArrays(2, myArray); 
 	
-	glGenVertexArrays(1, myArray);
+
 
 	glBindVertexArray(myArray[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
@@ -391,7 +392,7 @@ int main(int argc, char **argv)
 	
 	glBindVertexArray(myArray[1]);
 
-	 glBindBuffer(GL_ARRAY_BUFFER, buffer_vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer_vertices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_indices);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
