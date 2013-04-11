@@ -285,7 +285,7 @@ void InitGeometrie()
 	delete [] buffer;
 
 	//LoadTextures
-	//textures[0] = LoadBmp("../Data/earthmap.bmp");
+	textures[0] = LoadBmps("../Data/earthmap.bmp");
 	//textures[1] = LoadBmp("../Data/sunmap.bmp");
 	//textures[2] = LoadBmp("../Data/mars.bmp");
 	//textures[3] = LoadBmp("../Data/moonmap.bmp");

@@ -3,4 +3,4 @@
 #include <GL/glew.h>
 using namespace std;
 
-GLuint LoadBmp(const string &filename);
+GLuint LoadBmps(const string &filename);

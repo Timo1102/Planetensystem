@@ -1,6 +1,6 @@
 #include "bmpLoad.h"
 
-GLuint LoadBmp(const string &filename)
+GLuint LoadBmps(const string &filename)
 {
 
 				ifstream stream;
