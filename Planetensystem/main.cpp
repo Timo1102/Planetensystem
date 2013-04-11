@@ -19,6 +19,12 @@ int numIndices = 0;
 //TextureID's
 GLuint textures[4];
 
+GLuint buffer_vertices;
+GLuint buffer_indices;
+
+	GLuint myBuffers[2] = {0,0};
+
+
 
 //float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
 //float cameraRotation[3] = {-45.5f, 0.0f, 0.0f}; //camera rotation in degree
@@ -116,8 +122,8 @@ void display()
 
 
 
-	
-
+	glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[1]);
 	
 	//Sonne
 	mMatrix = Rotation(0,time * 0.09f, 0);
@@ -228,10 +234,8 @@ void resizeFunction(int w, int h)
 
 void InitGeometrie()
 {
-	GLuint myBuffers[2] = {0,0};
 
-	glGenBuffers(2, myBuffers);
-
+		glGenBuffers(2, myBuffers);
 	//Geometrie
 
 	int thetaStep = 1;
@@ -306,15 +310,22 @@ void InitGeometrie()
 	GLuint buffer_indices;
 
 	 GLfloat vertices[] = {
+        0.0f, 0.0f, 1.0f,
         0.0f, 0.0f, -1.0f,
-        0.0f, 1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-        1.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, -1.0f,
+        0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, -1.0f,
+		0.0f, 1.0f, -1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, -1.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, -1.0f,
+		1.0f, 0.0f, -1.0f,
     };
 
 	 GLuint indices[] = {
-        1, 0, 2,
-        3, 2, 0,
+        0, 1, 2,3
     };
 
 
@@ -325,8 +336,8 @@ void InitGeometrie()
 	 glBindBuffer(GL_ARRAY_BUFFER, buffer_vertices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_indices);
 
-	  glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(GLuint), indices, GL_STATIC_DRAW);
+	  glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
 }
 
