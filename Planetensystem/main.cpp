@@ -286,9 +286,9 @@ void InitGeometrie()
 
 	//LoadTextures
 	textures[0] = LoadBmps("../Data/earthmap.bmp");
-	//textures[1] = LoadBmp("../Data/sunmap.bmp");
-	//textures[2] = LoadBmp("../Data/mars.bmp");
-	//textures[3] = LoadBmp("../Data/moonmap.bmp");
+	textures[1] = LoadBmps("../Data/sunmap.bmp");
+	textures[2] = LoadBmps("../Data/mars.bmp");
+	textures[3] = LoadBmps("../Data/moonmap.bmp");
 
 
 }
