@@ -17,25 +17,25 @@ int numVertices = 0;
 int numIndices = 0;
 
 //TextureID's
-GLuint textures[5];
+GLuint textures[6];
 
 GLuint buffer_vertices;
 GLuint buffer_indices;
 
-	GLuint myBuffers[2] = {0,0};
-	GLuint myArray[2];
+GLuint myBuffers[2] = {0,0};
+GLuint myArray[2];
 
+Matrix projectionMatrix;
+Matrix ortho;
 
-//float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
-//float cameraRotation[3] = {-45.5f, 0.0f, 0.0f}; //camera rotation in degree
-float cameraPosition[3] = {0, 0, -10};		    //camera ist an z-position 10
+float cameraPosition[3] = {0, 0, -10};	 //camera ist an z-position 10
 float cameraRotation[3] = {-15.f, 0.0f, 0.0f};
 float Light[3] = {0.f, 0.0f, 0.0f}; //camera rotation in degree
 cwc::glShader *shader;
 
 //matrizen
 
-Matrix Tranlation(float x, float y, float z)
+Matrix Translation(float x, float y, float z)
 {
 	Matrix mTranslation;
 	//mTranslation = Matrix(Vector(x,y,z));
@@ -92,9 +92,9 @@ void CreatePlanet(Matrix modelMatrix)
 {
 	shader->begin();
 	
-	Matrix projectionMatrix = Matrix::Perspective(0.1,1000,800,800,50);
+	projectionMatrix = Matrix::Perspective(0.1,1000,800,800,50);
 	//Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
-	Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
+	Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Translation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, projectionMatrix.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, viewMatrix.data);
@@ -111,18 +111,19 @@ void display()
 	Matrix mMatrix;
 	Matrix mErde;
 	Matrix mMars;
+	Matrix mNeptun;
 
 	time = glutGet(GLUT_ELAPSED_TIME);
 
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			Matrix ortho = Matrix::Orthogonal(0.1,1000,1,1);
+	ortho = Matrix::Orthogonal(0.1,1000,2,2);
 
 	glBindVertexArray(myArray[1]);
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, ortho.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, Matrix().data);
-	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, Tranlation(0,0,-10).data);
+	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, Translation(0,0,-10).data);
 	glBindTexture(GL_TEXTURE_2D, textures[4]);
 
 	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
@@ -138,35 +139,39 @@ void display()
 	CreatePlanet(mMatrix);	
 
 	//Erde
-	mErde =  Tranlation(3.5f + 1.5 * sinf(time * 0.01f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, time * 0.01f, 0) * Rotation(0, 180, 25);
+	mErde =  Translation(4.5f + 1.5 * sinf(time * 0.01f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, time * 0.01f, 0) * Rotation(0, 180, 25);
 	mMatrix = Scale(0.2f,0.2f,0.2f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.19f, 0) * mErde ;
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	CreatePlanet(mMatrix);	
 
 	//Mond
 	//mMatrix = mErde * Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0)  * Tranlation(12.0f, 0.0f, 0.0f) * Scale(0.18f,0.18f,0.18f) ;
-	mMatrix = Scale(0.06f,0.06f,0.06f) * Tranlation(0.50f, 0.0f, 0.0f) * Rotation(0,time * 0.09f, 0) * mErde;
+	mMatrix = Scale(0.06f,0.06f,0.06f) * Translation(0.50f, 0.0f, 0.0f) * Rotation(0,time * 0.09f, 0) * mErde;
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
 
 	//Mars
-	mMars = Tranlation(6.0f + 1.5 * sinf(-time * 0.09f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, -time * 0.09f, 0) * Rotation(0, 180, 25);
+	mMars = Translation(7.0f + 1.5 * sinf(-time * 0.09f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, -time * 0.09f, 0) * Rotation(0, 180, 25);
 	mMatrix = Scale(0.5f,0.5f,0.5f) * Rotation(0,time * 0.19f, 0) * Rotation(0,0, 15) * Rotation(0,time * 0.29f, 0) * mMars;
 	glBindTexture(GL_TEXTURE_2D, textures[2]);
 	CreatePlanet(mMatrix);
 
 	
 	//Mars Mond1
-	mMatrix = Scale(0.18f,0.18f,0.18f) * Tranlation(1.1f, 0.0f, 0.0f) * Rotation(0,time * 0.29f, 0) *  mMars;
+	mMatrix = Scale(0.18f,0.18f,0.18f) * Translation(1.1f, 0.0f, 0.0f) * Rotation(0,time * 0.29f, 0) *  mMars;
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
 
 	//Mars Mond2
-	mMatrix = Scale(0.11f,0.11f,0.11f) * Tranlation(2.1f, 0.0f, 0.0f) * Rotation(0,-time * 0.2f, 0) *  mMars;
+	mMatrix = Scale(0.11f,0.11f,0.11f) * Translation(2.1f, 0.0f, 0.0f) * Rotation(0,-time * 0.2f, 0) *  mMars;
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
 
-
+	//Jupiter
+	mNeptun = Translation(2.0f + 0.5 * sinf(-time * 0.03f /360.0f * 2 * M_PI ), 0.0f, 0.0f) * Rotation(0, -time * 0.03f, 0) * Rotation(0, 180,25);
+	mMatrix = Scale(0.31f,0.31f,0.31f) * Rotation(0, -time * 0.03f, 0) * mNeptun;
+	glBindTexture(GL_TEXTURE_2D, textures[5]);
+	CreatePlanet(mMatrix);
 
 	glutSwapBuffers();
 }
@@ -212,7 +217,7 @@ void mouseMove(int x, int y)
 	dX =  2.0*double(x)/800.0 - 1.0;
 	dY = -2.0*double(y)/800.0 + 1.0;
 
-	cameraRotation[1] = dY * 45;
+	cameraRotation[2] = dY * 45;
 	cameraRotation[0] = dX * 45;
 
 	printf("dX: %g dY: %g \n", dX, dY);
@@ -227,18 +232,8 @@ void idleFunction()
 
 void resizeFunction(int w, int h) 
 {
-	double radius = sqrt(3.0); 
-	double viewAngle = M_PI / 3.0; 
-	double distance = radius / sin(viewAngle/2.0);
-	double front = distance - radius;
-	double back  = distance + radius;
-	double aspect = double(w)/double(h); //<<<<<<
-	double top = front * tan(viewAngle/2.0);
-	double bottom = -top;
-	double left = top * aspect;
-	double right = -left;
 
-	glViewport(0,0,w,h);
+	projectionMatrix = Matrix::Perspective(0.1,1000,w,h,50);
 }
 
 void InitGeometrie()
@@ -325,7 +320,8 @@ void InitGeometrie()
 	textures[2] = LoadBmps("../Data/mars.bmp");
 	textures[3] = LoadBmps("../Data/moonmap.bmp");
 	textures[4] = LoadBmps("../Data/space.bmp");
-	
+	textures[5] = LoadBmps("../Data/neptunemap.bmp");
+
 	//hintergrund
 	GLuint buffer_vertices;
 	GLuint buffer_indices;
