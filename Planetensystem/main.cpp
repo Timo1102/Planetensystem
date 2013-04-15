@@ -13,6 +13,7 @@ using namespace RK;
 
 double dX = -0.9;
 double dY = -0.9;
+
 int numVertices = 0;
 int numIndices = 0;
 
@@ -112,25 +113,16 @@ void display()
 	Matrix mErde;
 	Matrix mMars;
 	Matrix mNeptun;
-
 	time = glutGet(GLUT_ELAPSED_TIME);
-
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	ortho = Matrix::Orthogonal(0.1,1000,2,2);
-
 	glBindVertexArray(myArray[1]);
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, ortho.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, Matrix().data);
 	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, Translation(0,0,-10).data);
 	glBindTexture(GL_TEXTURE_2D, textures[4]);
-
 	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
-
 	glClear(GL_DEPTH_BUFFER_BIT);
-
-
 	glBindVertexArray(myArray[0]);
 
 	//Sonne
@@ -181,23 +173,23 @@ void keyboard(unsigned char key, int x, int y)
 switch(key) {
 	case 'w':
 		cameraPosition[2] += 0.1;
-	break;
+		break;
 	case 'a':
 		cameraPosition[0] += 0.1;
-	break;
-		case 's':
-			cameraPosition[2] -= 0.1;
-	break;
-		case 'd':
-			cameraPosition[0] -= 0.1;
-	break;
-		case 'q':
-			cameraPosition[1] += 0.1;
-	break;
-		case 'e':
-			cameraPosition[1] -= 0.1;
-	break;
-}
+		break;
+	case 's':
+		cameraPosition[2] -= 0.1;
+		break;
+	case 'd':
+		cameraPosition[0] -= 0.1;
+		break;
+	case 'q':
+		cameraPosition[1] += 0.1;
+		break;
+	case 'e':
+		cameraPosition[1] -= 0.1;
+		break;
+	}
 }
 
 
@@ -232,14 +224,13 @@ void idleFunction()
 
 void resizeFunction(int w, int h) 
 {
-
 	projectionMatrix = Matrix::Perspective(0.1,1000,w,h,50);
 }
 
 void InitGeometrie()
 {
 
-		glGenBuffers(2, myBuffers);
+	glGenBuffers(2, myBuffers);
 	//Geometrie
 
 	int thetaStep = 1;
