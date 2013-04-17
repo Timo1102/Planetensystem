@@ -20,43 +20,46 @@ int numIndices = 0;
 //TextureID's
 GLuint textures[6];
 
+//Buffers
 GLuint buffer_vertices;
 GLuint buffer_indices;
 
 GLuint myBuffers[2] = {0,0};
 GLuint myArray[2];
 
+//Matrizen
 Matrix projectionMatrix;
 Matrix ortho;
+
 
 float cameraPosition[3] = {0, 0, -10};	 //camera ist an z-position 10
 float cameraRotation[3] = {-15.f, 0.0f, 0.0f};
 float Light[3] = {0.f, 0.0f, 0.0f}; //camera rotation in degree
+
+//Shader
 cwc::glShader *shader;
 
 //matrizen
-
 Matrix Translation(float x, float y, float z)
 {
 	Matrix mTranslation;
-	//mTranslation = Matrix(Vector(x,y,z));
-	mTranslation = Matrix(1.0f, 0.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f, 0.0f,   x, y, z, 1.0);
-
+	mTranslation = Matrix(1.0f, 0.0f, 0.0f, 0.0f,   
+						  0.0f, 1.0f, 0.0f, 0.0f,  
+						  0.0f, 0.0f, 1.0f, 0.0f,   
+						  x,    y,    z,    1.0);
 	return mTranslation;
 }
-
 
 Matrix Scale(float tx, float ty, float tz)
 {
 
 	Matrix mScale;
-		mScale = Matrix(tx, 0.0f, 0.0f, 0.0f,
-		               0.0f, ty, 0.0f, 0.0f,
-					   0.0f, 0.0f, tz, 0.0f,
-					   0.0f, 0.0f, 0.0f, 1.0f);
-		return mScale;
+	mScale = Matrix(tx  , 0.0f, 0.0f, 0.0f,
+		            0.0f, ty  , 0.0f, 0.0f,
+					0.0f, 0.0f, tz  , 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f);
+	return mScale;
 }
-
 
 Matrix Rotation(float alphaXDegree, float alphaYDegree, float alphaZDegree)
 {
@@ -64,39 +67,39 @@ Matrix Rotation(float alphaXDegree, float alphaYDegree, float alphaZDegree)
 	float alphaY = alphaYDegree/360.0f * 2 * M_PI;
 	float alphaZ = alphaZDegree/360.0f * 2 * M_PI;
 
-	//Rotation um die z-Achse
-	Matrix mRotation;
-
-	mRotation *=Matrix(cos(alphaZ), -sin(alphaZ), 0.0f, 0.0f,
-					   sin(alphaZ), cos(alphaZ), 0.0f, 0.0f,
-					   0.0f      , 0.0f      , 1.0f, 0.0f,
-					   0.0f      ,0.0f       , 0.0f , 1.0f);
-	//Rotation um die y-Achse
 	
+	Matrix mRotation;
+	//Rotation um die z-Achse
+	mRotation *= Matrix(cos(alphaZ), -sin(alphaZ), 0.0f, 0.0f,
+					    sin(alphaZ), cos(alphaZ) , 0.0f, 0.0f,
+					    0.0f       , 0.0f        , 1.0f, 0.0f,
+					    0.0f       ,0.0f         , 0.0f , 1.0f);
 
-	mRotation *=Matrix(cos(alphaY), 0.0f , sin(alphaY), 0.0f,
-					   0.0f, 1.0f, 0.0f, 0.0f,
-					   -sin(alphaY)    , 0.0f      , cos(alphaY), 0.0f,
-					   0.0f      ,0.0f       , 0.0f , 1.0f);
+	//Rotation um die y-Achse
+	mRotation *=Matrix(cos(alphaY) ,0.0f ,sin(alphaY),0.0f,
+					   0.0f		   ,1.0f ,0.0f	     ,0.0f,
+					   -sin(alphaY),0.0f ,cos(alphaY),0.0f,
+					   0.0f        ,0.0f ,0.0f       ,1.0f);
 	
 	//Rotation um ide x-Achse
-	
-	mRotation *=Matrix(1.0f, 0.0f, 0.0f, 0.0f,
-					   0.0f, cos(alphaX),-sin(alphaX), 0.0f,
-					   0.0f      , sin(alphaX) , cos(alphaX), 0.0f,
-					   0.0f      ,0.0f       , 0.0f , 1.0f);
+	mRotation *=Matrix(1.0f ,0.0f	    , 0.0f		 ,0.0f,
+					   0.0f ,cos(alphaX),-sin(alphaX),0.0f,
+					   0.0f ,sin(alphaX), cos(alphaX),0.0f,
+					   0.0f ,0.0f       , 0.0f		 ,1.0f);
 
 	return mRotation;
 }
 
 void CreatePlanet(Matrix modelMatrix)
 {
+	
 	shader->begin();
 	
+
 	projectionMatrix = Matrix::Perspective(0.1,1000,800,800,50);
-	//Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Tranlation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 	Matrix viewMatrix = Rotation(cameraRotation[0], cameraRotation[1], cameraRotation[2]) * Translation(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 
+	//Shader Variablen übergabe
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, projectionMatrix.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, viewMatrix.data);
 	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, modelMatrix.data);
@@ -109,17 +112,26 @@ void CreatePlanet(Matrix modelMatrix)
 void display() 
 {
 	int time = 0;
+
+	//Planeten Matrizen
 	Matrix mMatrix;
 	Matrix mErde;
 	Matrix mMars;
 	Matrix mNeptun;
+
+	//Die Zeit
 	time = glutGet(GLUT_ELAPSED_TIME);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	ortho = Matrix::Orthogonal(0.1,1000,2,2);
+
 	glBindVertexArray(myArray[1]);
+
 	shader->setUniformMatrix4fv("uni_perspective", 1, GL_FALSE, ortho.data);
 	shader->setUniformMatrix4fv("uni_view", 1, GL_FALSE, Matrix().data);
 	shader->setUniformMatrix4fv("uni_model", 1, GL_FALSE, Translation(0,0,-10).data);
+
 	glBindTexture(GL_TEXTURE_2D, textures[4]);
 	glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -136,8 +148,7 @@ void display()
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	CreatePlanet(mMatrix);	
 
-	//Mond
-	//mMatrix = mErde * Rotation(0, 0, 15) * Rotation(0,time * 0.09f, 0)  * Tranlation(12.0f, 0.0f, 0.0f) * Scale(0.18f,0.18f,0.18f) ;
+	//MErde Mond
 	mMatrix = Scale(0.06f,0.06f,0.06f) * Translation(0.50f, 0.0f, 0.0f) * Rotation(0,time * 0.09f, 0) * mErde;
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	CreatePlanet(mMatrix);
@@ -192,18 +203,6 @@ switch(key) {
 	}
 }
 
-
-
-void mouseButton(int button, int state, int x, int y) 
-{
-	dX =  2.0*double(x)/800.0 - 1.0;
-	dY = -2.0*double(y)/600.0 + 1.0;
-
-
-
-	glutPostRedisplay();
-}
-
 void mouseMove(int x, int y) 
 {
 	dX =  2.0*double(x)/800.0 - 1.0;
@@ -224,29 +223,38 @@ void idleFunction()
 
 void resizeFunction(int w, int h) 
 {
+	double ax = 1.0, ay = 1.0;
+		
 	projectionMatrix = Matrix::Perspective(0.1,1000,w,h,50);
+	
+
+	if (w >= ax / ay * h){
+		glViewport(0, -(ay / ax * w - h) / 2.0, w, ay / ax * w);
+	}
+	else{
+		glViewport(-(ax / ay * h - w) / 2.0, 0, ax / ay * h, h);
+	}
 }
 
+//Die Geometrie
 void InitGeometrie()
 {
-
 	glGenBuffers(2, myBuffers);
-	//Geometrie
 
 	int thetaStep = 1;
 	int phiStep = 1;
 	int numFloatsPerVertex = 9;
-
 	int numRows = (180/thetaStep);
 	int numCols = (360/phiStep);
 	numVertices = (numRows+1) * numCols;
-	
+
 	int numFloats = numVertices * numFloatsPerVertex; // Anzahl an Float-Werten
 	float *buffer = new float[numFloats]; 
 	int bufferSize = numFloats * sizeof(float); // Grösse in bytes
 
 	int index = 0;
 	float x,y,z;
+	//Die Planeten
 	for(int theta = 0; theta <= 180; theta += thetaStep) 
 	{
 		for(int phi = 0; phi < 360; phi += phiStep) 
@@ -275,6 +283,7 @@ void InitGeometrie()
 	int indexBufferSize = numIndices * sizeof(unsigned int);
 	index = 0;
 
+	//Plane
 	for(int i = 0; i < (numRows); i++) {
 		for(int j = 0; j < numCols; j++) {
 			indexBuffer[index++] =  i    * numCols + j;
@@ -288,19 +297,14 @@ void InitGeometrie()
 	glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[1]);
 
-
-
-
-	
 	glBufferData(GL_ARRAY_BUFFER, bufferSize, buffer, GL_STATIC_DRAW);
 
-	
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indexBuffer, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
 
-		glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	
@@ -317,7 +321,7 @@ void InitGeometrie()
 	GLuint buffer_vertices;
 	GLuint buffer_indices;
 
-	 GLfloat vertices[] = {
+	GLfloat vertices[] = {
         -1.0f, -1.0f, 1.0f,
         -1.0f, -1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -332,35 +336,33 @@ void InitGeometrie()
 		1.0f, -1.0f, -1.0f,
     };
 
-	 GLuint indices[] = {
-        0, 1, 2,3
-    };
+	for (int i = 0; i<36; i++)
+	{
+		vertices[i] *= 30.0f;
+	}
 
-	 	glBindVertexArray(myArray[1]);
+	GLuint indices[] = {0,1,2,3};
+	glBindVertexArray(myArray[1]);
 
-	 glGenBuffers(1, &buffer_vertices);
+	glGenBuffers(1, &buffer_vertices);
     glGenBuffers(1, &buffer_indices);
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer_vertices);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_indices);
 
-	  glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 6*sizeof(float)));
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(NULL + 3*sizeof(float)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), NULL);
 
-		glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
 	delete [] buffer;
-
 }
-
-
-
 
 int main(int argc, char **argv) 
 {
@@ -370,8 +372,7 @@ int main(int argc, char **argv)
 	glutInitWindowPosition(10,10);
 	glutCreateWindow("OpenGL");
 	glutKeyboardFunc(keyboard);
-	glutDisplayFunc(display);
-	glutMouseFunc(mouseButton); 
+	glutDisplayFunc(display); 
 	glutMotionFunc(mouseMove);
 	glutIdleFunc(idleFunction);
 	glutReshapeFunc(resizeFunction);
@@ -388,10 +389,8 @@ int main(int argc, char **argv)
 	shader->BindAttribLocation(0, "att_vertex");
 	shader->BindAttribLocation(1, "att_normal");
 	shader->BindAttribLocation(2, "att_color");
-	//glBindFragDataLocation(shader->GetProgramObject(), 0, "r_color");
 
 	glEnable(GL_DEPTH_TEST);
-	
 	
 	GLuint program = glCreateProgram();
 	
@@ -405,5 +404,3 @@ int main(int argc, char **argv)
 	
 	return 0;
 }
-
-
